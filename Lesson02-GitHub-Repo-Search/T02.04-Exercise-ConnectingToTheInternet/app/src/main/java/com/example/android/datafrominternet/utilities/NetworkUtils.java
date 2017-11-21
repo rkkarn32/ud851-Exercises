@@ -84,8 +84,12 @@ public class NetworkUtils {
             } else {
                 return null;
             }
-        } finally {
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        finally {
             urlConnection.disconnect();
         }
+        return null;
     }
 }
