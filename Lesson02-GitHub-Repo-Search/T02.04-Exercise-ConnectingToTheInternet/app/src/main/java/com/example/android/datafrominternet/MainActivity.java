@@ -55,13 +55,19 @@ public class MainActivity extends AppCompatActivity {
     private void makeGithubSearchQuery() {
         String githubQuery = mSearchBoxEditText.getText().toString();
         URL githubSearchUrl = NetworkUtils.buildUrl(githubQuery);
+        NetworkUtils networkUtil = new NetworkUtils();
+        networkUtil.setUrl(githubSearchUrl);
+
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
 
         // Done (2) Call getResponseFromHttpUrl and display the results in mSearchResultsTextView
         // Done (3) Surround the call to getResponseFromHttpUrl with a try / catch block to catch an IOException
         String response="";
         try {
-            response = NetworkUtils.getResponseFromHttpUrl(githubSearchUrl);
+            Thread myThread = new Thread(networkUtil);
+            myThread.start();
+            myThread.join();
+            response = networkUtil.getResponse();
         } catch (Exception e) {
             e.printStackTrace();
         }

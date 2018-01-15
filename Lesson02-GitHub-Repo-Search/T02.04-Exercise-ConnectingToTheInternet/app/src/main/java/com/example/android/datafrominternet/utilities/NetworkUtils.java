@@ -27,7 +27,25 @@ import java.util.Scanner;
 /**
  * These utilities will be used to communicate with the network.
  */
-public class NetworkUtils {
+public class NetworkUtils implements Runnable{
+    URL url;
+    String response;
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
 
     final static String GITHUB_BASE_URL =
             "https://api.github.com/search/repositories";
@@ -52,7 +70,6 @@ public class NetworkUtils {
                 .appendQueryParameter(PARAM_QUERY, githubSearchQuery)
                 .appendQueryParameter(PARAM_SORT, sortBy)
                 .build();
-
         URL url = null;
         try {
             url = new URL(builtUri.toString());
@@ -70,7 +87,7 @@ public class NetworkUtils {
      * @return The contents of the HTTP response.
      * @throws IOException Related to network and stream reading
      */
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    public String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
@@ -91,5 +108,15 @@ public class NetworkUtils {
             urlConnection.disconnect();
         }
         return null;
+    }
+
+    @Override
+    public void run() {
+        try {
+            response=getResponseFromHttpUrl(url);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
